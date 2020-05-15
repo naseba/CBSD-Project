@@ -1,3 +1,5 @@
+//import 'dart:isolate';
+
 import 'package:care_alarm2/Screens/scedule.dart';
 import 'package:care_alarm2/Screens/units.dart';
 import 'package:flutter/material.dart';
@@ -5,48 +7,51 @@ import 'package:care_alarm2/Database/medicine.dart';
 
 class AddMedicine extends StatefulWidget{
 
-  //String selected;
-  //AddMedicine(this.selected);
-
-  final String appBarTitle;
+  
+  //final String appBarTitle;
   final Medicine medicine;
-  AddMedicine(this.medicine,this.appBarTitle);
+  AddMedicine(this.medicine);
   @override
   //_AddMedicineState createState() => _AddMedicineState(appBarTitle);
   State<StatefulWidget> createState() {
-    return AddMedicineState(this.medicine,this.appBarTitle);
+    return AddMedicineState(this.medicine);
   }
 }
   
 class AddMedicineState extends State<AddMedicine> {
-  //String selected;
- // _AddMedicineState(this.selected);
-     String appBarTitle;
+ 
+    // String appBarTitle;
      Medicine medicine;
-    AddMedicineState(this.medicine,this.appBarTitle);
+    AddMedicineState(this.medicine);
 
-  
+    bool get isEditing =>medicine.id!=null;
     TextEditingController mediName=TextEditingController();
     TextEditingController dosage=TextEditingController();
+    int count=0;
   @override
   Widget build(BuildContext context) {
-    mediName.text=medicine.name;
+    if(medicine.id!=null){
+      mediName.text=medicine.name;
     dosage.text=medicine.dosage.toString();
+    }
 
     TextStyle textStyle=Theme.of(context).textTheme.title;
     return Scaffold(      
       appBar: AppBar(
         centerTitle: true,
-        title: Text(appBarTitle),
+        title: Text(isEditing?'Edit Medicine':'Add Medicine'),//if id!=null then the user want to edit the medicine and if the id ==null then it's new medicine
         actions: <Widget>[
           new IconButton(
-          icon: Text('Next',style: TextStyle(fontSize: 20),), 
+          icon: Text('Next',style: TextStyle(fontSize: 20)), 
           iconSize: 60, 
           onPressed: (){
            // Navigator.of(context).pushNamed('/Scedule');
-           Navigator.push(context, MaterialPageRoute(builder: (context){
+           print('the numbel is $count');
+           //if(count==3){
+             Navigator.push(context, MaterialPageRoute(builder: (context){
                             return Scedule(medicine);
                             }));
+          // }
           })
           
         ],
@@ -64,6 +69,9 @@ class AddMedicineState extends State<AddMedicine> {
                 style: textStyle,
                 onChanged: (value){
                   medicine.name=mediName.text;
+                },
+                onSubmitted: (valuee){
+                  count++;
                 },
                 decoration: InputDecoration(
                   labelText: 'Medicine Name',
@@ -84,6 +92,9 @@ class AddMedicineState extends State<AddMedicine> {
                 onChanged: (value){
                   medicine.dosage=int.parse(dosage.text);
                 },
+                onSubmitted: (valuee){
+                  count++;
+                },
                 decoration: InputDecoration(
                   labelText: 'Dosage',
                   labelStyle: textStyle,
@@ -97,11 +108,11 @@ class AddMedicineState extends State<AddMedicine> {
              ListTile(
                   
                   title: Text('Units' ,style:TextStyle(fontSize: 25),),
-                  //if(medicine.units !=null)
                    subtitle: Text(medicine.units ,style:TextStyle(fontSize: 20)),
               
                   trailing: Icon(Icons.chevron_right,color: Colors.grey,),
                   onTap: (){
+                    count++;
                     setState(() {
                        
                        //Navigator.of(context).pushNamed('/Units');
@@ -119,6 +130,5 @@ class AddMedicineState extends State<AddMedicine> {
           ),
         ),
     );
-  }
-  
+  }//build
 }

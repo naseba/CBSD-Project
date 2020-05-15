@@ -1,6 +1,10 @@
+//import 'package:care_alarm2/Screens/home_screen.dart';
+import 'package:care_alarm2/Screens/medicine_details.dart';
 import 'package:flutter/material.dart';
 import 'package:care_alarm2/Database/database_helper.dart';
 import 'package:care_alarm2/Database/medicine.dart';
+
+//import 'medicine_details.dart';
 
 class MoreDetails extends StatefulWidget {
   //@override
@@ -26,8 +30,11 @@ class _MoreDetailsState extends State<MoreDetails> {
    // int val=1;
   @override
   Widget build(BuildContext context) {
-      pillsNum.text=medicine.numOfPills.toString();
+
+     if(medicine.id !=null){
+        pillsNum.text=medicine.numOfPills.toString();
       refilnum.text=medicine.pillsLeft.toString();
+     }
      // val=medicine.refill;
 
     TextStyle textStyle=Theme.of(context).textTheme.title;
@@ -41,11 +48,14 @@ class _MoreDetailsState extends State<MoreDetails> {
           icon: Text('Done',style: TextStyle(fontSize: 20),), 
           iconSize: 60, 
           onPressed: (){
-            Navigator.of(context).pushNamedAndRemoveUntil('/HomeScreen',ModalRoute.withName('/'));
-            
+          // Navigator.of(context).pushNamedAndRemoveUntil('/HomeScreen',ModalRoute.withName('/'));
+
             save();
-            print("done: $medicine.name");
-          })
+
+          Navigator.push(context, MaterialPageRoute(builder: (context){
+        return MedicineDetails(medicine);
+     }));
+          }),
           
         ],
       ),
@@ -53,7 +63,7 @@ class _MoreDetailsState extends State<MoreDetails> {
       body: Column(
         children: <Widget>[
           Padding(
-                padding: EdgeInsets.only(right:10.0,left:10.0,top: 5.0,bottom: 15.0),
+                padding: EdgeInsets.only(right:10.0,left:10.0,top: 30.0,bottom: 15.0),
                 child: TextField(
                 controller: pillsNum,
                 style: textStyle,
@@ -99,6 +109,7 @@ class _MoreDetailsState extends State<MoreDetails> {
           child: Text('Refill Reminder  ',style: TextStyle(fontSize: 20,color: Colors.black), ),
           ),
 
+           
           Padding(
           padding: EdgeInsets.only(right:5.0,left:150.0,top: 20.0),
           child: Switch(
@@ -126,6 +137,9 @@ class _MoreDetailsState extends State<MoreDetails> {
       case 0:
          return false;
           break; 
+      default:
+      return false;
+      break;
     }
   }//setValue
 
@@ -137,27 +151,13 @@ class _MoreDetailsState extends State<MoreDetails> {
       case false:
           medicine.refill=0;
           break; 
+      default:
+       medicine.refill=0;
+      break;    
     }
   }///updateValu
 
-  void save() async{
-    int result;
-    if(medicine.id != null) {//Update Operatio
-        result= await databaseHelper.updateMedi(medicine);
-    }
-    else{//insert Operation
-      result= await databaseHelper.insertMedi(medicine);
-    }
-
-    if(result !=0){ //Success
-        showAlartDialog('Status','Medicine Saved Successfully');
-    }
-    else{ //failure
-        showAlartDialog('Status',' Problem Saving Medicine');
-    }
-  }//Save
-
-  void showAlartDialog(String title,String message){
+    void showAlartDialog(String title,String message){
     AlertDialog alertDialog=AlertDialog(
       title: Text(title),
       content: Text(message),
@@ -167,4 +167,26 @@ class _MoreDetailsState extends State<MoreDetails> {
       builder: (_)=>alertDialog
       );
   }//showAlartDialog
+
+  void save() async{
+    medicine.state=2;
+    medicine.userid=5;
+        int result;
+    if(medicine.id != null) {//Update Operatio
+        result= await databaseHelper.updateMedi(medicine);
+    }
+    if(medicine.id == null){//insert Operation
+      result= await databaseHelper.insertMedi(medicine);
+    }
+
+    if(result !=0){ //Success
+        showAlartDialog('Status','Medicine Saved Successfully');
+
+    }
+    else{ //failure
+        showAlartDialog('Status',' Problem Saving Medicine');
+    }
+  }//Save
+
+
 }

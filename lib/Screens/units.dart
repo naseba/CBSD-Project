@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 
 class Units extends StatelessWidget{
 
-  Medicine medicine;
+  final Medicine medicine;
   Units(this.medicine);
-  final unitList=['pills','cc','ml','gr','Drops','pieces','puffs','teaSpoon','tableSpoon','patch','mcg'];
+  final  unitList=['pills','cc','ml','gr','Drops','pieces','puffs','teaSpoon','tableSpoon','patch','mcg'];
  // String selected='';
   Widget build(BuildContext context) {
 

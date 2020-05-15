@@ -9,11 +9,14 @@ import 'Screens/report.dart';
 */
 import 'package:care_alarm2/Database/medicine.dart';
 import 'package:flutter/material.dart';
+import 'Database/user.dart';
 import 'Screens/add_medicine.dart';
+import 'Screens/register.dart';
 import 'Screens/scedule.dart';
 import 'Screens/units.dart';
 import 'Screens/more_details.dart';
 import './Screens/home_screen.dart';
+import 'Screens/medicine_details.dart';
 
 void main() {
   runApp(MyApp());
@@ -21,22 +24,27 @@ void main() {
   
   class MyApp  extends StatelessWidget{
     Medicine medicine;
+    User user;
+   // bool get isloged => user.active!=0;
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
       debugShowCheckedModeBanner: false,
      // theme: myThemeData,
       //home: HomeScreen(),
-      initialRoute:'/HomeScreen' ,
+     initialRoute:'/HomeScreen' ,
+    // initialRoute: isloged?'/HomeScreen':'/Register',
     routes:{
-      '/HomeScreen':(context)=>HomeScreen(),
-      '/AddMedicine':(context)=>AddMedicine(medicine,''),
+      '/Register':(context)=>Register(),
+      '/HomeScreen':(context)=>HomeScreen(medicine),
+      '/AddMedicine':(context)=>AddMedicine(medicine),
       '/Units':(context)=>Units(medicine),
       '/Scedule':(context)=>Scedule(medicine),
-      '/MoreDetails':(context)=>MoreDetails(medicine),
-       
+      '/MoreDetails':(context)=>MoreDetails(medicine),  
+      '/MedicineDetails':(context)=>MedicineDetails(medicine),
+
       
-      /*'/Register':(context)=>Register(),
+      /*',
       '/Login':(context)=>Login(),
       
       '/MedicineDetails':(context)=>MedicineDetails(),
