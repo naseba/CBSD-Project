@@ -1,12 +1,8 @@
-import 'package:flutter/material.dart';
-  import 'package:flutter/cupertino.dart';
 import 'package:sqflite/sqflite.dart';
 import 'dart:async';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
-import 'package:care_alarm2/Database/medicine.dart';
 import 'package:care_alarm2/Database/user.dart';
-import 'package:flutter/material.dart';
 
 class UserDatabase{
 
@@ -19,7 +15,7 @@ class UserDatabase{
     String firstName='FirstName';
     String lastName='LastName';
     String gender='Gender';
-    String birthDate='BirthDate';
+    String place='Place';
     String active='Active';
 
     UserDatabase.creatInstance();
@@ -40,24 +36,30 @@ class UserDatabase{
     Future<Database> initializeDatabase () async {
 
       Directory directory=await getApplicationDocumentsDirectory();
-      String path=directory.path+'medicine.db';
+      String path=directory.path+'User.db';
       //create the database at the given path
-      var medDatabase= await openDatabase(path,version:1,onCreate: _creatDb);
-      return  medDatabase; 
+      var userDatabase= await openDatabase(path,version:1,onCreate: _creatDb);
+      return  userDatabase; 
     }
 
     void _creatDb(Database db , int newVersion) async{
 
      await db.execute('CREATE TABLE $userTable($userid INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,'+
-                      '$firstName TEXT,$lastName TEXT,$gender TEXT,$birthDate TEXT,$active Text)');
+                      '$firstName TEXT,$lastName TEXT,$gender TEXT,$place TEXT,$active INTEGER )');
     }
-    Future<List<Map<String,dynamic>>> getUserMapList()async{//int id
+    Future<List<Map<String,dynamic>>> getUserMapList()async{
       Database db=await this.database;
 
-      var result=await db.rawQuery('SELECT * FROM $userTable');// WHERE $userid = $id);
+      var result=await db.rawQuery('SELECT * FROM $userTable');
       return result;
     }
-
+    Future<User> getActiveUser()async{
+      Database db=await this.database;
+      User user;
+      var result=await db.rawQuery('SELECT * FROM $userTable WHERE $active = 1 ');
+      user=User.fromMApToObject(result[0]);
+      return user;
+    }
     Future<int> insertUser(User user) async{
       Database db=await this.database;
 
@@ -95,7 +97,7 @@ class UserDatabase{
     Future<List<User>> getUsersList() async{
       var userMapList=await getUserMapList();
       int count =userMapList.length;
-      debugPrint('Iam insedgetMediList' );
+     // debugPrint('Iam insedgetMediList' );
       List<User> userList=List<User>();
       for(int i=0;i<count;i++){
         userList.add(User.fromMApToObject(userMapList[i]));

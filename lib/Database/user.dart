@@ -4,11 +4,11 @@ class User{
   String firstName;
   String lastName;
   String gender;
-  String birthDate;
+  String palce;
   int active;
 
-  User(this.firstName,this.lastName,this.gender,this.birthDate,this.active);
-  User.withID(this.id,this.firstName,this.lastName,this.gender,this.birthDate,this.active);
+  User(this.firstName,this.lastName,this.gender,this.palce,this.active);
+  User.withID(this.id,this.firstName,this.lastName,this.gender,this.palce,this.active);
 
   Map<String,dynamic> toMap(){
     var map=Map<String,dynamic>();
@@ -17,7 +17,7 @@ class User{
     map['FirstName']=firstName;
     map['LastName']=lastName;
     map['Gender']=gender;
-    map['BirthDate']=birthDate;
+    map['Place']=palce;
     map['Active']=active;
 
     return map;
@@ -28,7 +28,7 @@ class User{
     firstName=map['FirstName'];
     lastName=map['LastName'];
     gender=map['Gender'];
-    birthDate=map['BirthDate'];
+    palce=map['Place'];
     active=map['Active'];
   }
 }

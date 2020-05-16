@@ -4,7 +4,6 @@ import 'dart:async';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:care_alarm2/Database/medicine.dart';
-import 'package:care_alarm2/Database/user.dart';
 import 'package:flutter/material.dart';
 
 class DatabaseHelper{
@@ -61,13 +60,10 @@ class DatabaseHelper{
 
     void _creatDb(Database db , int newVersion) async{
 
-     /*await db.execute('CREATE TABLE $userTable($userid INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,'+
-                      '$firstName TEXT,$lastName TEXT,$gender TEXT,$birthDate TEXT,$active Text)');*/
-      
       await db.execute('CREATE TABLE $mediTable($medid INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,'+
                       '$medname TEXT,$dosage INTEGER,$units TEXT,$time TEXT,$numOfTime INTEGER Nullable,'+
                       '$startDate TEXT ,$endDate TEXT, $numOfPills INTEGER ,$pillsLeft INTEGER,$refill INTEGER,$state INTEGER,$userID INTEGER)');
-                       //($userID) REFERENCES $userTable ($userid)  
+                        
     }
 
   // Fetch Operation : Get one medicine from database based on ID
@@ -81,7 +77,7 @@ class DatabaseHelper{
    Future<List<Map<String,dynamic>>> getALLMediMapList()async{//int uid
       Database db=await this.database;
 
-      var result=await db.rawQuery('SELECT * FROM $mediTable');  //ORDER BY $state ASC');//WHERE $userID = $uid
+      var result=await db.rawQuery('SELECT * FROM $mediTable ');  //ORDER BY $state ASC');//WHERE $userID = $uid
       return result;
     }
 

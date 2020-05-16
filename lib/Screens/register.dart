@@ -1,4 +1,3 @@
-import 'package:care_alarm2/Database/database_helper.dart';
 import 'package:care_alarm2/Database/user.dart';
 import 'package:care_alarm2/Database/userDatabase.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +13,8 @@ class _RegisterState extends State<Register> {
   List<User> userList;
   TextEditingController firstName=TextEditingController();
   TextEditingController lastName=TextEditingController();
+    TextEditingController country=TextEditingController();
+
   UserDatabase databaseHelper=UserDatabase();
   @override
   Widget build(BuildContext context) {
@@ -64,6 +65,24 @@ class _RegisterState extends State<Register> {
                 ),
               ),
               ),  
+              Padding(
+                padding: EdgeInsets.only(right:10.0,left:10.0,top: 15.0,bottom: 15.0),
+                child: 
+                TextField(
+                controller: country,
+                style: textStyle,
+                onChanged: (value){
+                  user.palce=value;
+                },
+                decoration: InputDecoration(
+                  labelText: 'Country',
+                  labelStyle: textStyle,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(5.0),
+                  )
+                ),
+              ),
+              ),  
               ListTile(title: Row(children: <Widget>[
                 Padding(
                     padding: EdgeInsets.only(right:70.0,left:10.0,top: 20.0),
@@ -94,7 +113,10 @@ class _RegisterState extends State<Register> {
                 textColor: Theme.of(context).primaryColorLight,
                 child: Text('Save',textScaleFactor: 1.5,),
                 onPressed: (){
-                  //  save();
+                    save();
+                    Navigator.of(context).pushNamed('/Accounts');
+                    //Navigator.push(context, MaterialPageRoute(builder: (context){
+                      //          return AddMedicine(this.medicineList[position]);}));
                 }
                 ),)
           ],
@@ -109,21 +131,20 @@ class _RegisterState extends State<Register> {
     int number=0;
     if(user.id != null) {//Update Operatio
         result= await databaseHelper.updatetUser(user);
-      //  Navigator.of(context).pushNamed('/HomeScreen');
-    }
+      }
     if(user.id == null){//insert Operation
       result= await databaseHelper.insertUser(user);
-      Navigator.of(context).pushNamed('/HomeScreen');
       number=await databaseHelper.getUSerCount();
       print('The users number ${number.toString()}');
+      print(user);
     }
 
     if(result !=0){ //Success
-        showAlartDialog('Status','Medicine Saved Successfully');
+        showAlartDialog('Status','User Saved Successfully');
 
     }
     else{ //failure
-        showAlartDialog('Status',' Problem Saving Medicine');
+        showAlartDialog('Status',' Problem Saving User');
     }
   }
    void showAlartDialog(String title,String message){

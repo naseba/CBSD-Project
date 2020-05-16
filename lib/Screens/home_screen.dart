@@ -1,7 +1,7 @@
 import 'package:care_alarm2/Database/database_helper.dart';
 import 'package:care_alarm2/Database/medicine.dart';
-import 'package:care_alarm2/Database/user.dart';
 import 'package:care_alarm2/Screens/add_medicine.dart';
+import 'package:care_alarm2/widget.dart/drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -9,6 +9,7 @@ import 'medicine_details.dart';
 
 class HomeScreen extends StatefulWidget {
  final Medicine medicine;
+
   HomeScreen(this.medicine);
   @override
   //_HomeScreenState createState() => _HomeScreenState();
@@ -23,7 +24,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   DatabaseHelper databaseHelper=DatabaseHelper();
   List<Medicine> medicineList; // to display all medicine in the listviwe
-  List<User> userList;
+ // List<User> userList;
   int count;
   bool result;
   int fieldCount;
@@ -34,16 +35,14 @@ class _HomeScreenState extends State<HomeScreen> {
      // medicineList=[new Medicine.withID(1,1, 'Medicine12', 15, 'ml', 3, '', '15/5/2020', '', 15, 1, 0, 1)];
     if(medicineList==null){
       medicineList=List<Medicine>();
-      print('the list lenth befor =${medicineList.length.toString()} ');
       updateListView();
-      print('the list lenth =${medicineList.length.toString()} ');
     }
     // updateListView();
-    if(userList==null){
+  /*  if(userList==null){
       userList=List<User>(); 
-    }
+    }*/
     return Scaffold(    
-              
+      drawer: MyDrawer(),        
       appBar: AppBar(        
         title: Text('Medicines'),
       ),
@@ -75,18 +74,21 @@ class _HomeScreenState extends State<HomeScreen> {
           return Dismissible(
             key: ValueKey(this.medicineList[position].id),
             direction: DismissDirection.endToStart,
-            onDismissed: (direction){
-              if(result==true)
-              delete(context, this.medicineList[position]);
-            },
             confirmDismiss: (direction) async{
-             showAlartDialog( result);
+             showAlartDialog( result,this.medicineList[position]);
               return result;
             },
             background: Container(
-              color:Colors.red,
-              padding:EdgeInsets.only(right:16),
-              child: Align(child: Icon(Icons.delete,color:Colors.white),alignment: Alignment.centerRight,),
+              color:Colors.red[300],
+              padding:EdgeInsets.all(16),
+              alignment: Alignment.centerRight,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                Icon(Icons.delete,color:Colors.white),
+                Padding(padding: EdgeInsets.all(4)),
+                Text('Delete',style: TextStyle(color:Colors.white),)
+              ],)//(child: Icon(Icons.delete,color:Colors.white),alignment: Alignment.centerRight,),
             ),
                       child: Card(
               color: Colors.white,
@@ -100,7 +102,7 @@ class _HomeScreenState extends State<HomeScreen> {
               title: Text(this.medicineList[position].name,style: titlestyle,),
               subtitle: Text(this.medicineList[position].dosage.toString()+"  "+this.medicineList[position].units),
               onTap: (){
-                
+                countfield(fieldCount);
               Navigator.push(context, MaterialPageRoute(builder: (context){
                                 return MedicineDetails(this.medicineList[position]);}));
               },
@@ -179,16 +181,18 @@ class _HomeScreenState extends State<HomeScreen> {
      }));
    }//navigateToDetail
 
-    showAlartDialog(bool result){
+    showAlartDialog(bool result,Medicine medicine){
     AlertDialog alertDialog=AlertDialog (
       title: Text('Warning'),
       content: Text('Are you sure you want to delete this medicine ?'),
       actions: <Widget>[
         FlatButton(
         onPressed: (){
+          delete(context, medicine);
           Navigator.of(context).pop();
           result=true;
-            print(result);}, 
+            print(result);
+          }, 
         child: Text(" Yes ")),
         FlatButton(
           onPressed: (){
