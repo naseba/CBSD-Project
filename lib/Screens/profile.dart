@@ -1,11 +1,16 @@
 import 'package:care_alarm2/Database/user.dart';
+import 'package:care_alarm2/Database/userDatabase.dart';
+import 'package:care_alarm2/Screens/accounts.dart';
+import 'package:care_alarm2/Screens/register.dart';
 import 'package:flutter/material.dart';
+
+import 'editProfile.dart';
 
 class Profile extends StatelessWidget{
 
   final User user;
   Profile(this.user);
-
+  UserDatabase userDatabase=UserDatabase();
  // String selected='';
   Widget build(BuildContext context) {
 
@@ -93,7 +98,7 @@ class Profile extends StatelessWidget{
           ),
              ],),
            ),
-         
+     
       ],)
     );
 

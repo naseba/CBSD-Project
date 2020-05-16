@@ -10,8 +10,10 @@ import 'Screens/report.dart';
 
 import 'package:care_alarm2/Database/medicine.dart';
 import 'package:flutter/material.dart';
+import 'Database/user.dart';
 import 'Screens/accounts.dart';
 import 'Screens/add_medicine.dart';
+import 'Screens/editProfile.dart';
 import 'Screens/register.dart';
 import 'Screens/scedule.dart';
 import 'Screens/units.dart';
@@ -25,7 +27,7 @@ void main() {
   
   class MyApp  extends StatelessWidget{
     Medicine medicine;
-  //  User user;
+    User user;
     
    // bool get isloged => user.active!=0;
   @override
@@ -38,7 +40,8 @@ void main() {
      //initialRoute:'/HomeScreen' ,
      initialRoute: '/Register',
     routes:{
-      '/Accounts':(context)=>Accounts(),
+      '/Accounts':(context)=>Accounts(),//EditProfile
+       '/EditProfile':(context)=>EditProfile(user), 
       '/Register':(context)=>Register(),
       '/HomeScreen':(context)=>HomeScreen(medicine),
       '/AddMedicine':(context)=>AddMedicine(medicine),

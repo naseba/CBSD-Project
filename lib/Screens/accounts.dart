@@ -1,5 +1,6 @@
 import 'package:care_alarm2/Database/user.dart';
 import 'package:care_alarm2/Database/userDatabase.dart';
+import 'package:care_alarm2/Screens/editProfile.dart';
 import 'package:care_alarm2/Screens/profile.dart';
 import 'package:care_alarm2/widget.dart/gridCell.dart';
 import 'package:flutter/material.dart';
@@ -8,21 +9,33 @@ import 'package:sqflite/sqflite.dart';
 class Accounts extends StatefulWidget {
 
   @override
-  _AccountsState createState() => _AccountsState();
+ _AccountsState createState() => _AccountsState();
+
 }
 
 class _AccountsState extends State<Accounts> {
+
+  User user;
+
   UserDatabase userDatabase=UserDatabase();
 
-  List<User> userList=List<User>();
-  User user;
+  List<User> userList;
+  
   int count;
-
   @override
   Widget build(BuildContext context) {
+      if(userList==null){
+        userList=List<User>();
+         getUsersList();
+          print('the user number : $count');
+      }
 
-      getUsersList();
-    print('the user number : $count');
+      if(user!=null){
+        userList.add(user);
+        getUsersList();
+      }
+     
+   
 
     return  Scaffold(
       appBar: AppBar(        
@@ -32,14 +45,24 @@ class _AccountsState extends State<Accounts> {
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
       itemCount: userList.length,
       itemBuilder: (BuildContext context,int index){
-        return Container(
-          color: Colors.white70,
-          child: Column(
-            children: <Widget>[
-              Icon(Icons.contact_phone,size: 100,),
-              Text("${userList[index].firstName} ${ userList[index].lastName}" ,style: TextStyle(fontSize: 25)),
-              
-             ],),
+        return GestureDetector(
+                  child: Container(
+            color: Colors.white70,
+            child: Column(
+              children: <Widget>[
+                Icon(Icons.contact_phone,size: 100,),
+                Text("${userList[index].firstName} ${ userList[index].lastName}" ,style: TextStyle(fontSize: 25)),
+                
+               ],),
+          ),
+          onTap: (){
+            //userDatabase.deleteUser(userList[index].id);
+            //getUsersList();
+            //print('user datelted');
+             Navigator.push(context, MaterialPageRoute(builder: (context){
+                               return EditProfile(userList[index]);}));
+
+          },
         );
       },
       

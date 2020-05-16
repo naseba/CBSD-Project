@@ -1,16 +1,22 @@
 import 'package:care_alarm2/Database/user.dart';
 import 'package:care_alarm2/Database/userDatabase.dart';
+import 'package:care_alarm2/Screens/accounts.dart';
 import 'package:flutter/material.dart';
 
-class Register extends StatefulWidget {
- 
+class EditProfile extends StatefulWidget {
+ final  User user;
+  EditProfile(this.user);
   @override
-  _RegisterState createState() => _RegisterState();
+ // _EditProfilerState createState() => _EditProfilerState();
+ State<StatefulWidget> createState() {
+    return _EditProfilerState(this.user);
+  }
 }
 
-class _RegisterState extends State<Register> {
+class _EditProfilerState extends State<EditProfile> {
  
-  User user=User('','','','',1);
+  User user;
+  _EditProfilerState(this.user);
 
    static var gender=['Male','Femail'];
   List<User> userList;
@@ -19,14 +25,20 @@ class _RegisterState extends State<Register> {
   TextEditingController country=TextEditingController();
 
   UserDatabase databaseHelper=UserDatabase();
+  Accounts accounts=Accounts();
   @override
   Widget build(BuildContext context) {
+    if(user.id!=null){
+      firstName.text=user.firstName;
+    lastName.text=user.lastName;
+    country.text=user.palce;
+    }
     TextStyle textStyle=Theme.of(context).textTheme.title;
 
     return Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title:Text('Register')),
+          title:Text('EditProfile')),
         body: Padding(
           padding: EdgeInsets.only(top: 15.0,left:10.0,right: 10.0,),
            child: ListView(
@@ -86,8 +98,7 @@ class _RegisterState extends State<Register> {
                 ),
               ),
               ),  
-              ListTile(
-                title: Row(children: <Widget>[
+              ListTile(title: Row(children: <Widget>[
                 Padding(
                     padding: EdgeInsets.only(right:70.0,left:10.0,top: 20.0),
                     child: Text('Gender  ',style: TextStyle(fontSize: 20,color: Colors.black), ),
@@ -110,19 +121,32 @@ class _RegisterState extends State<Register> {
                   ),
                 ),
               ],) , ),
-              Padding(
+              Row(children: <Widget>[
+             Padding(
                 padding: EdgeInsets.only(top:50),
                 child: RaisedButton(
                 color: Theme.of(context).primaryColorDark,
                 textColor: Theme.of(context).primaryColorLight,
-                child: Text('Save',textScaleFactor: 1.5,),
+                child: Text('Edit',textScaleFactor: 1.5,),
                 onPressed: (){
-                    save();
-                    Navigator.of(context).pushNamed('/Accounts');
-                    //Navigator.push(context, MaterialPageRoute(builder: (context){
-                      //          return AddMedicine(this.medicineList[position]);}));
+                  edit();
+                  // Navigator.push(context, MaterialPageRoute(builder: (context){
+                    //            return Accounts(user);}));
+                    Navigator.of(context).pop();
                 }
-                ),)
+                ),),
+                Padding(
+                padding: EdgeInsets.only(top:50),
+                child: RaisedButton(
+                color: Theme.of(context).primaryColorDark,
+                textColor: Theme.of(context).primaryColorLight,
+                child: Text('Delete',textScaleFactor: 1.5,),
+                onPressed: (){
+                    databaseHelper.deleteUser(user.id);
+                    Navigator.of(context).pop(true);
+                    
+                }
+                ),),]),
           ],
         ),
         ),
@@ -130,18 +154,21 @@ class _RegisterState extends State<Register> {
     );
   }
 
-  void save() async{
+  void edit() async{
     int result;
     int number=0;
     if(user.id != null) {//Update Operatio
         result= await databaseHelper.updatetUser(user);
+        number=await databaseHelper.getUSerCount();
+       print('The users Edit Number ${number.toString()}');
+
       }
-    if(user.id == null){//insert Operation
+   /* if(user.id == null){//insert Operation
       result= await databaseHelper.insertUser(user);
       number=await databaseHelper.getUSerCount();
       print('The users number ${number.toString()}');
       print(user);
-    }
+    }*/
 
     if(result !=0){ //Success
         showAlartDialog('Status','User Saved Successfully');
