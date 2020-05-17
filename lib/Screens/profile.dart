@@ -1,5 +1,7 @@
+import 'package:care_alarm2/Database/database_helper.dart';
 import 'package:care_alarm2/Database/user.dart';
 import 'package:care_alarm2/Database/userDatabase.dart';
+import 'package:care_alarm2/Screens/register.dart';
 import 'package:flutter/material.dart';
 
 
@@ -8,6 +10,7 @@ class Profile extends StatelessWidget{
   final User user;
   Profile(this.user);
   UserDatabase userDatabase=UserDatabase();
+  DatabaseHelper databaseHelper=DatabaseHelper();
  // String selected='';
   Widget build(BuildContext context) {
 
@@ -87,7 +90,29 @@ class Profile extends StatelessWidget{
           ),
              ],),
            ),
-     
+
+          Row(
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.all(10.0),
+                child: RaisedButton(
+                  child: Text('Edit'),
+                  onPressed: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (context){
+                               return Register(user);
+                               }));
+                  },),),
+                  Padding(
+                padding: EdgeInsets.all(10.0),
+                child: RaisedButton(
+                  child: Text('Delete'),
+                  onPressed: (){
+                   userDatabase.deleteUser(user.id);
+                    databaseHelper.deleteUserMedicine(user.id);
+                               
+                  },),),
+            ],
+          ),
       ],)
     );
 

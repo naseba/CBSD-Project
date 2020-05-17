@@ -9,6 +9,7 @@ import 'Screens/report.dart';
 */
 
 import 'package:care_alarm2/Database/medicine.dart';
+import 'package:care_alarm2/Database/userDatabase.dart';
 import 'package:flutter/material.dart';
 import 'Database/user.dart';
 import 'Screens/accounts.dart';
@@ -28,6 +29,9 @@ void main() {
   class MyApp  extends StatelessWidget{
     Medicine medicine;
     User user;
+    UserDatabase userDB=UserDatabase();
+    int count;
+    bool get isEmbty =>count==0;
     
    // bool get isloged => user.active!=0;
   @override
@@ -35,15 +39,11 @@ void main() {
     
     return new MaterialApp(
       debugShowCheckedModeBanner: false,
-     // theme: myThemeData,
-      //home: HomeScreen(),
-     //initialRoute:'/HomeScreen' ,
-     initialRoute: '/HomeScreen',
+     initialRoute:isEmbty?'/Register': '/Accounts',
     routes:{
-    
       '/Accounts':(context)=>Accounts(),//EditProfile
        '/EditProfile':(context)=>EditProfile(user), 
-      '/Register':(context)=>Register(),
+      '/Register':(context)=>Register(user),
       '/HomeScreen':(context)=>HomeScreen(medicine,user),//medicine
       '/AddMedicine':(context)=>AddMedicine(medicine,user),
       '/Units':(context)=>Units(medicine),
@@ -53,7 +53,9 @@ void main() {
     },
     );
   }
-
+   void getUsersCount()async{
+     count= await userDB.getUSerCount();
+   }
   
 
 }

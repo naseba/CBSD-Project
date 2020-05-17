@@ -3,14 +3,21 @@ import 'package:care_alarm2/Database/userDatabase.dart';
 import 'package:flutter/material.dart';
 
 class Register extends StatefulWidget {
+  User user;
+  Register(this.user);
  
   @override
-  _RegisterState createState() => _RegisterState();
+ // _RegisterState createState() => _RegisterState();
+ State<StatefulWidget> createState() {
+    // TODO: implement createState
+    return _RegisterState(this.user);
+  }
 }
 
 class _RegisterState extends State<Register> {
  
   User user=User('','','','',1);
+  _RegisterState(this.user);
 
    static var gender=['Male','Femail'];
   List<User> userList;
@@ -21,6 +28,12 @@ class _RegisterState extends State<Register> {
   UserDatabase databaseHelper=UserDatabase();
   @override
   Widget build(BuildContext context) {
+
+    if(user.id!=null){
+      firstName.text=user.firstName;
+      lastName.text=user.lastName;
+      country.text=user.palce;
+    }
     TextStyle textStyle=Theme.of(context).textTheme.title;
 
     return Scaffold(
@@ -118,7 +131,7 @@ class _RegisterState extends State<Register> {
                 child: Text('Save',textScaleFactor: 1.5,),
                 onPressed: (){
                     save();
-                    Navigator.of(context).pushNamed('/Accounts');
+                    Navigator.of(context).pushNamedAndRemoveUntil('/Accounts',ModalRoute.withName('/'));
                     //Navigator.push(context, MaterialPageRoute(builder: (context){
                       //          return AddMedicine(this.medicineList[position]);}));
                 }

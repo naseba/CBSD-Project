@@ -142,12 +142,12 @@ class DatabaseHelper{
        return result;
     }*/
       //Delete User's Medicines from table Medicine if the user Deleted
-   /* Future<int> deleteUserMedicine(int userid)async{
+   Future<int> deleteUserMedicine(int userid)async{
        Database db=await this.database;
 
        var result= await db.rawDelete('DELETE FROM $mediTable WHERE $userID= $userid');
        return result;
-    }*/
+    }
 
     //Get number of medicines objects in database
     Future<int> getMedCount() async{

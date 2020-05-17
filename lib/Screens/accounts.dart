@@ -1,8 +1,7 @@
 import 'package:care_alarm2/Database/medicine.dart';
 import 'package:care_alarm2/Database/user.dart';
 import 'package:care_alarm2/Database/userDatabase.dart';
-import 'package:care_alarm2/Screens/editProfile.dart';
-import 'package:care_alarm2/Screens/profile.dart';
+import 'package:care_alarm2/Screens/register.dart';
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -44,6 +43,15 @@ class _AccountsState extends State<Accounts> {
     return  Scaffold(
       appBar: AppBar(        
         title: Text('Accounts'),
+        actions: <Widget>[
+          new IconButton(
+          icon:(Icon(Icons.add)), 
+          iconSize: 50, 
+          onPressed: (){
+             Navigator.push(context, MaterialPageRoute(builder: (context){
+                            return Register(User('', '', '', '', 0));
+                            }));
+          },)]
       ),
       body:GridView.builder(
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
@@ -54,7 +62,7 @@ class _AccountsState extends State<Accounts> {
             color: Colors.white70,
             child: Column(
               children: <Widget>[
-                Icon(Icons.contact_phone,size: 100,),
+                Icon(Icons.face ,size: 100,),
                 Text("${userList[index].firstName} ${ userList[index].lastName}" ,style: TextStyle(fontSize: 25)),
                 
                ],),
