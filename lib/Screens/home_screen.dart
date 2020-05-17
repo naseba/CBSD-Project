@@ -1,126 +1,137 @@
 import 'package:care_alarm2/Database/database_helper.dart';
 import 'package:care_alarm2/Database/medicine.dart';
+import 'package:care_alarm2/Database/user.dart';
 import 'package:care_alarm2/Screens/add_medicine.dart';
-import 'package:care_alarm2/widget.dart/drawer.dart';
+import 'package:care_alarm2/Screens/profile.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:sqflite/sqflite.dart';
 
-import 'medicine_details.dart';
-
 class HomeScreen extends StatefulWidget {
- final Medicine medicine;
+  final Medicine medicine;
+  final User user;
 
-  HomeScreen(this.medicine);
+  HomeScreen(this.medicine,this.user);
   @override
   //_HomeScreenState createState() => _HomeScreenState();
-  State<StatefulWidget> createState() {
-    return _HomeScreenState(this.medicine);
+ State<StatefulWidget> createState() {
+   
+    return _HomeScreenState(this.medicine,this.user);
   }
-}
+  }
+
 
 class _HomeScreenState extends State<HomeScreen> {
-    Medicine medicine;
-  _HomeScreenState(this.medicine);
 
-  DatabaseHelper databaseHelper=DatabaseHelper();
-  List<Medicine> medicineList; // to display all medicine in the listviwe
- // List<User> userList;
-  int count;
-  bool result;
-  int fieldCount;
-  
+  User user;
+   Medicine medicine=Medicine(1, '', 1, '', 1, '', '', '', 1, 1, 0, 1);
+
+     _HomeScreenState(this.medicine,this.user);
+     
+     
+    DatabaseHelper databaseHelper=DatabaseHelper();
+   List<Medicine> medicineList;
+   bool result;
   @override
   Widget build(BuildContext context) {
-    countfield(fieldCount);
-     // medicineList=[new Medicine.withID(1,1, 'Medicine12', 15, 'ml', 3, '', '15/5/2020', '', 15, 1, 0, 1)];
     if(medicineList==null){
       medicineList=List<Medicine>();
       updateListView();
     }
-    // updateListView();
-  /*  if(userList==null){
-      userList=List<User>(); 
-    }*/
-    return Scaffold(    
-      drawer: MyDrawer(),        
-      appBar: AppBar(        
-        title: Text('Medicines'),
-      ),
-      
-      body: getMediList(),
+    if(medicine!=null){
+      medicineList.add(medicine);
+      updateListView();
+    }
 
-       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        tooltip: 'Add Medicine',
-        onPressed: () {
-            //Navigator.of(context).pushNamed('/AddMedicine');
-            //navigateToDetail(Medicine(1, '', 1, '', 1, '', '', '', 1, 1, 0, 2));
-            
-     Navigator.push(context, MaterialPageRoute(builder: (context){
-        return AddMedicine(Medicine(1, '', 1, '', 1, '', '', '', 1, 1, 0, 2));
-     }));
-        },
+    return Scaffold(
+      body: Container(
+        width: MediaQuery.of(context).size.width,
+        height:  MediaQuery.of(context).size.height,
+        child: Stack(
+          children: <Widget>[
+             Positioned(
+               child:Container(
+                 width: MediaQuery.of(context).size.width,
+                 height:  MediaQuery.of(context).size.height/3,
+                decoration: BoxDecoration(
+                  color:Color(0xff5a348b),
+                  gradient: LinearGradient(
+                   colors: [Color(0xff8d70fe),Color(0xff2da9ef)],
+                   begin: Alignment.centerRight,
+                   end: Alignment(-1.0,-1.0) ),
+                ),
+                child: appBarWidget() ,
+               ), ),
+               Positioned(
+                 top:160.0,
+                 left: 18.0,
+                 child: Container(
+                   color: Colors.white,
+                   width: 380.0,
+                   height: MediaQuery.of(context).size.height/1.5,
+                 child: getMediList(), 
+                 ),),
+          ],
         ),
+      ),
+      floatingActionButton: new FloatingActionButton(
+        backgroundColor: Color(0xff2da9ef) ,
+        foregroundColor: Color(0xffffffff),
+        onPressed:(){
+            Navigator.push(context, MaterialPageRoute(builder: (context){
+                            return AddMedicine(Medicine(1, '', 1, '', 1, '', '', '', 1, 1, 0, 1),user);
+                            }));
+        },
+        tooltip: 'Add Medicine',
+        child: new Icon(Icons.add),
+         ),
+         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked ,
+         bottomNavigationBar: BottomAppBar(
+           color:  Color(0xff2da9ef),
+           shape: CircularNotchedRectangle(),
+           child: Row(
+             mainAxisSize: MainAxisSize.max,
+             mainAxisAlignment: MainAxisAlignment.spaceAround,
+             children: <Widget>[
+               IconButton(
+                 icon: Icon(Icons.face),
+                 color: Colors.white,
+                 tooltip: 'Profile',
+                 onPressed: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (context){
+                              return Profile(user);}));
+                 },
+               ),
+               IconButton(
+                 icon: Icon(Icons.people_outline),
+                 color: Colors.white,
+                 tooltip: 'Accounts',
+                 onPressed: (){
+                   Navigator.of(context).pushNamed('/Accounts');
+                 },
+               ),
+             ],
+           ),
+         ),
+
+
     );
-  }//build
+  }
 
-  ListView getMediList(){
+  Widget appBarWidget(){
+    DateTime dateTime=DateTime.now();
+    String day=DateFormat('d').format(dateTime);
+    String month= DateFormat('LLLL').format(dateTime);
+    String year =DateFormat('y').format(dateTime);
+    return Align(
+      child: ListTile(
+        leading: Text(day,style: TextStyle(fontSize: 50.0,color:Colors.amber)),
+        title: Text(month,style: TextStyle(fontSize: 34.0,color:Colors.white)),
+        subtitle: Text(year,style: TextStyle(fontSize: 24.0,color:Colors.white)),
+      ) ,
+    );
+  }
 
-    TextStyle titlestyle=Theme.of(context).textTheme.subhead;
-
-    return ListView.builder(
-        itemCount:medicineList.length,
-        itemBuilder: (BuildContext context,int position){
-          return Dismissible(
-            key: ValueKey(this.medicineList[position].id),
-            direction: DismissDirection.endToStart,
-            confirmDismiss: (direction) async{
-             showAlartDialog( result,this.medicineList[position]);
-              return result;
-            },
-            background: Container(
-              color:Colors.red[300],
-              padding:EdgeInsets.all(16),
-              alignment: Alignment.centerRight,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                Icon(Icons.delete,color:Colors.white),
-                Padding(padding: EdgeInsets.all(4)),
-                Text('Delete',style: TextStyle(color:Colors.white),)
-              ],)//(child: Icon(Icons.delete,color:Colors.white),alignment: Alignment.centerRight,),
-            ),
-                      child: Card(
-              color: Colors.white,
-              elevation: 2.0, 
-              child: ListTile(
-                leading: CircleAvatar(
-                backgroundColor: getStateColor(this.medicineList[position].state),
-                child: getStateIcon(this.medicineList[position].state),
-              ),
-
-              title: Text(this.medicineList[position].name,style: titlestyle,),
-              subtitle: Text(this.medicineList[position].dosage.toString()+"  "+this.medicineList[position].units),
-              onTap: (){
-                countfield(fieldCount);
-              Navigator.push(context, MaterialPageRoute(builder: (context){
-                                return MedicineDetails(this.medicineList[position]);}));
-              },
-
-              onLongPress: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context){
-                                return AddMedicine(this.medicineList[position]);}));
-              },
-
-              ),
-            ),
-          );
-        }
-      );
-  }//getMediList
-
-
-  
   Color getStateColor(int state){
     switch(state){      
       case 1://Missed
@@ -137,51 +148,117 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }//getStateColor
 
-  Icon getStateIcon(int state){
-    switch(state){
-      case 1://Missed
-        return Icon(Icons.cancel);
-        break;
-      case 2://not Yet
-        return Icon(Icons.check_circle_outline);
-        break;
-      case 3://Taken
-        return Icon(Icons.check_circle);
-        break;
-      default:
-        return Icon(Icons.check_circle_outline);
-    }
-  }//getStateIcon
+  ListView getMediList(){
 
-  void updateListView(){
-     final Future<Database> dbFututre =databaseHelper.database;
-     dbFututre.then((database){
-       Future<List<Medicine>> medListFuture=databaseHelper.getMediList();
-       medListFuture.then((medicineList){
-         setState(() {
-           this.medicineList=medicineList;
-           this.count=medicineList.length;
-         });
-       }); 
-      });
-  }//updateListView
+   // TextStyle titlestyle=Theme.of(context).textTheme.subhead;
+
+    return ListView.builder(
+        itemCount:medicineList.length,
+        itemBuilder: (BuildContext context,int position){
+          return Dismissible(
+            
+            key: ValueKey(this.medicineList[position].id),
+            background: hiddenContaner(medicineList[position].state) ,
+            child: listContaner(
+              medicineList[position].name,medicineList[position].state,
+              medicineList[position].dosage,medicineList[position].units) ,
+
+            confirmDismiss: (direction) async{
+              if(direction==DismissDirection.startToEnd){
+                Navigator.push(context, MaterialPageRoute(builder: (context){
+                            return AddMedicine(medicineList[position],user);
+                            }));
+              }
+              if(direction==DismissDirection.endToStart){
+                showAlartDialog( result,this.medicineList[position]);
+              }
+              return true;
+            },
+          );
+        }
+      );
+  }
+ 
+  Widget listContaner(String medicineName,int state,int dosage,String units){
+
+    return Padding(
+      padding: const EdgeInsets.all(9.0),
+      child:Container(
+        height:80.0,
+        child:Material( 
+         color:Colors.white,
+         elevation: 14.0,
+         shadowColor: Color(0x802196F3),
+         child:Container(
+           child: Row(
+               children: <Widget>[
+                 Container(
+                   height:80.0,
+               width:15,
+               color:getStateColor(state),
+                 ),
+                 Expanded(
+                   child: Column(
+                     mainAxisAlignment: MainAxisAlignment.start,
+                     children: <Widget>[
+                       Align(
+                         alignment: Alignment.topLeft,
+                         child: Container(
+                          child: Text(medicineName,style:TextStyle(fontSize: 25.0,color:Colors.black,fontWeight: FontWeight.bold)),
+                         )
+                       ),
+                       Align(
+                         alignment: Alignment.topLeft,
+                         child: Container(
+                          child: Text('${dosage.toString()}   $units',style:TextStyle(fontSize: 20.0,color:Colors.black,fontWeight: FontWeight.bold)),
+                         )
+                       ),
+                     ],
+                   ),),
+               ],
+           ),
+         ),
+
+    ),),);
+  }
   
-   void delete(BuildContext context,Medicine medicine) async{
-     //int  result=
-     await databaseHelper.deleteMedi(medicine.id);
-     updateListView();
-     final snackBar=SnackBar(content: Text('Medicine Deleted Successfully'));
-     Scaffold.of(context).showSnackBar(snackBar);
-   }//delete
+  Widget hiddenContaner(int sate){
+    return Container(
+      height:  MediaQuery.of(context).size.height,
+      color: getStateColor(sate) ,
+      child: Row(
+        children: <Widget>[
+          Align(
+            alignment: Alignment.centerLeft,
+            child: IconButton(
+              icon: Icon(Icons.delete),
+              color:Colors.white,
+              onPressed: (){
+                setState(() {
+                  
+                });
+              },
+            ),
+          ),
 
-   void navigateToDetail(Medicine medicine){//
+          Align(
+            alignment: Alignment.centerRight,
+            child: IconButton(
+              icon: Icon(Icons.edit),
+              color:Colors.white,
+              onPressed: (){
+                setState(() {
+                  
+                });
+              },
+            ),
+          ),
+        ],),
 
-     Navigator.push(context, MaterialPageRoute(builder: (context){
-        return AddMedicine(medicine);
-     }));
-   }//navigateToDetail
-
-    showAlartDialog(bool result,Medicine medicine){
+    );
+  }
+ 
+  showAlartDialog(bool result,Medicine medicine){
     AlertDialog alertDialog=AlertDialog (
       title: Text('Warning'),
       content: Text('Are you sure you want to delete this medicine ?'),
@@ -204,14 +281,28 @@ class _HomeScreenState extends State<HomeScreen> {
     );
       showDialog(
          context: context,
+
           builder: (_)=>alertDialog
                );
   }//showAlartDialog
-
-    void countfield(int numb) async{
-      numb=await databaseHelper.getMedCount();
-       print('the number of medicines  =$numb ');
-    }
+ 
+  void delete(BuildContext context,Medicine medicine) async{
+     //int  result=
+     await databaseHelper.deleteMedi(medicine.id);
+     updateListView();
+     }
+ 
+   void updateListView(){
+     final Future<Database> dbFututre =databaseHelper.database;
+     dbFututre.then((database){
+       Future<List<Medicine>> medListFuture=databaseHelper.getMediList(user.id);
+       medListFuture.then((medicineList){
+         setState(() {
+           this.medicineList=medicineList;
+           //this.count=medicineList.length;
+         });
+       }); 
+      });
+  }//updateListView
   }
-
 

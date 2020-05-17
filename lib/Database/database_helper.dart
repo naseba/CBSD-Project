@@ -67,17 +67,17 @@ class DatabaseHelper{
     }
 
   // Fetch Operation : Get one medicine from database based on ID
-    Future<List<Map<String,dynamic>>> getMediMapList()async{//int mid
+    Future<List<Map<String,dynamic>>> getMediMapList()async{//
       Database db=await this.database;
 
-      var result=await db.rawQuery('SELECT * FROM $mediTable ');//WHERE $medid = $mid
+      var result=await db.rawQuery('SELECT * FROM $mediTable ');//
       return result;
     }
        //Get all User's medicines from database based on User ID
-   Future<List<Map<String,dynamic>>> getALLMediMapList()async{//int uid
+   Future<List<Map<String,dynamic>>> getALLMediMapList(int usrid)async{//int uid
       Database db=await this.database;
 
-      var result=await db.rawQuery('SELECT * FROM $mediTable ');  //ORDER BY $state ASC');//WHERE $userID = $uid
+      var result=await db.rawQuery('SELECT * FROM $mediTable WHERE $userID = $usrid ');  //ORDER BY $state ASC');//WHERE $userID = $uid
       return result;
     }
 
@@ -167,8 +167,8 @@ class DatabaseHelper{
     }
 
     //Get the 'MapList' [List<Map>] and convert it to 'MediList' [List<Medicine>]
-    Future<List<Medicine>> getMediList() async{
-      var medMapList= await getALLMediMapList();
+    Future<List<Medicine>> getMediList(int usrid) async{
+      var medMapList= await getALLMediMapList(usrid);
       int count =medMapList.length;
       debugPrint('Iam insedgetMediList' );
       List<Medicine> mediList=List<Medicine>();

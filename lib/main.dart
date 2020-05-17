@@ -38,16 +38,17 @@ void main() {
      // theme: myThemeData,
       //home: HomeScreen(),
      //initialRoute:'/HomeScreen' ,
-     initialRoute: '/Register',
+     initialRoute: '/HomeScreen',
     routes:{
+    
       '/Accounts':(context)=>Accounts(),//EditProfile
        '/EditProfile':(context)=>EditProfile(user), 
       '/Register':(context)=>Register(),
-      '/HomeScreen':(context)=>HomeScreen(medicine),
-      '/AddMedicine':(context)=>AddMedicine(medicine),
+      '/HomeScreen':(context)=>HomeScreen(medicine,user),//medicine
+      '/AddMedicine':(context)=>AddMedicine(medicine,user),
       '/Units':(context)=>Units(medicine),
-      '/Scedule':(context)=>Scedule(medicine),
-      '/MoreDetails':(context)=>MoreDetails(medicine),  
+      '/Scedule':(context)=>Scedule(medicine,user),
+      '/MoreDetails':(context)=>MoreDetails(medicine,user),  
       '/MedicineDetails':(context)=>MedicineDetails(medicine),
     },
     );

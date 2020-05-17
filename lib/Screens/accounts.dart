@@ -1,10 +1,13 @@
+import 'package:care_alarm2/Database/medicine.dart';
 import 'package:care_alarm2/Database/user.dart';
 import 'package:care_alarm2/Database/userDatabase.dart';
 import 'package:care_alarm2/Screens/editProfile.dart';
 import 'package:care_alarm2/Screens/profile.dart';
-import 'package:care_alarm2/widget.dart/gridCell.dart';
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
+
+import 'home_screen.dart';
+
 
 class Accounts extends StatefulWidget {
 
@@ -18,6 +21,7 @@ class _AccountsState extends State<Accounts> {
   User user;
 
   UserDatabase userDatabase=UserDatabase();
+  Medicine medicine=Medicine(1, '', 1, '', 1, '', '', '', 1, 1, 0, 1);
 
   List<User> userList;
   
@@ -56,11 +60,9 @@ class _AccountsState extends State<Accounts> {
                ],),
           ),
           onTap: (){
-            //userDatabase.deleteUser(userList[index].id);
-            //getUsersList();
-            //print('user datelted');
              Navigator.push(context, MaterialPageRoute(builder: (context){
-                               return EditProfile(userList[index]);}));
+                               return HomeScreen(medicine,userList[index]);
+                               }));
 
           },
         );

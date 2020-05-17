@@ -1,5 +1,6 @@
 //import 'dart:isolate';
 
+import 'package:care_alarm2/Database/user.dart';
 import 'package:care_alarm2/Screens/scedule.dart';
 import 'package:care_alarm2/Screens/units.dart';
 import 'package:flutter/material.dart';
@@ -10,24 +11,27 @@ class AddMedicine extends StatefulWidget{
   
   //final String appBarTitle;
   final Medicine medicine;
-  AddMedicine(this.medicine);
+  final User user;
+  AddMedicine(this.medicine,this.user);
   @override
   //_AddMedicineState createState() => _AddMedicineState(appBarTitle);
   State<StatefulWidget> createState() {
-    return AddMedicineState(this.medicine);
+    return AddMedicineState(this.medicine,this.user);
   }
 }
   
 class AddMedicineState extends State<AddMedicine> {
  
     // String appBarTitle;
+    final User user;
      Medicine medicine;
-    AddMedicineState(this.medicine);
+    AddMedicineState(this.medicine,this.user);
 
     bool get isEditing =>medicine.id!=null;
     TextEditingController mediName=TextEditingController();
     TextEditingController dosage=TextEditingController();
     int count=0;
+    
   @override
   Widget build(BuildContext context) {
     if(medicine.id!=null){
@@ -36,7 +40,7 @@ class AddMedicineState extends State<AddMedicine> {
     }
 
     TextStyle textStyle=Theme.of(context).textTheme.title;
-    return Scaffold(      
+    return  Scaffold(      
       appBar: AppBar(
         centerTitle: true,
         title: Text(isEditing?'Edit Medicine':'Add Medicine'),//if id!=null then the user want to edit the medicine and if the id ==null then it's new medicine
@@ -49,7 +53,7 @@ class AddMedicineState extends State<AddMedicine> {
            print('the numbel is $count');
            //if(count==3){
              Navigator.push(context, MaterialPageRoute(builder: (context){
-                            return Scedule(medicine);
+                            return Scedule(medicine,user);
                             }));
           // }
           })
@@ -130,5 +134,6 @@ class AddMedicineState extends State<AddMedicine> {
           ),
         ),
     );
+    
   }//build
 }

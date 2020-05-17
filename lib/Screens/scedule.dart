@@ -1,3 +1,4 @@
+import 'package:care_alarm2/Database/user.dart';
 import 'package:care_alarm2/Screens/more_details.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
@@ -5,19 +6,20 @@ import 'package:intl/intl.dart';
 import 'package:care_alarm2/Database/medicine.dart';
 
 class Scedule extends StatefulWidget {
+  final User user;
   final Medicine medicine;
-  Scedule(this.medicine);
+  Scedule(this.medicine,this.user);
   @override
   //_SceduleState createState() => _SceduleState();
   State<StatefulWidget> createState() {
-    return _SceduleState(this.medicine);
+    return _SceduleState(this.medicine,this.user);
   }
 }
 
 class _SceduleState extends State<Scedule> {
-
+  User user;
   Medicine medicine;
-  _SceduleState(this.medicine);
+  _SceduleState(this.medicine,this.user);
   
   List<int> number;
   //List<String> frequency=['As Needed','Every Day','Specific Days','Days interval','Birth Control Days'];
@@ -59,7 +61,7 @@ class _SceduleState extends State<Scedule> {
           onPressed: (){
             //Navigator.of(context).pushNamed('/MoreDetails');
             Navigator.push(context, MaterialPageRoute(builder: (context){
-                            return MoreDetails(medicine);}));
+                            return MoreDetails(medicine,user);}));
           })
           
         ],

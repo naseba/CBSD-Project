@@ -1,4 +1,6 @@
 //import 'package:care_alarm2/Screens/home_screen.dart';
+import 'package:care_alarm2/Database/user.dart';
+import 'package:care_alarm2/Screens/home_screen.dart';
 import 'package:care_alarm2/Screens/medicine_details.dart';
 import 'package:flutter/material.dart';
 import 'package:care_alarm2/Database/database_helper.dart';
@@ -9,20 +11,20 @@ import 'package:care_alarm2/Database/medicine.dart';
 class MoreDetails extends StatefulWidget {
   //@override
   //_MoreDetailsState createState() => _MoreDetailsState();
-
+   final User user;
   final Medicine medicine;
-  MoreDetails(this.medicine);
+  MoreDetails(this.medicine,this.user);
   @override
   //_SceduleState createState() => _SceduleState();
   State<StatefulWidget> createState() {
-    return _MoreDetailsState(this.medicine);
+    return _MoreDetailsState(this.medicine,this.user);
   }
 }
 
 class _MoreDetailsState extends State<MoreDetails> {
-
+    User user;
     Medicine medicine;
-   _MoreDetailsState(this.medicine);
+   _MoreDetailsState(this.medicine,this.user);
      DatabaseHelper databaseHelper=DatabaseHelper();
   TextEditingController pillsNum=TextEditingController();
     TextEditingController refilnum=TextEditingController();
@@ -53,7 +55,7 @@ class _MoreDetailsState extends State<MoreDetails> {
             save();
 
           Navigator.push(context, MaterialPageRoute(builder: (context){
-        return MedicineDetails(medicine);
+        return HomeScreen(medicine,user);
      }));
           }),
           
@@ -170,7 +172,7 @@ class _MoreDetailsState extends State<MoreDetails> {
 
   void save() async{
     medicine.state=2;
-    medicine.userid=5;
+    medicine.userid=user.id;
         int result;
     if(medicine.id != null) {//Update Operatio
         result= await databaseHelper.updateMedi(medicine);
